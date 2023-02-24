@@ -162,6 +162,7 @@ def create_inventory(csv_bought_file, csv_sold_file):
             else:
                 continue
     return selected_stock
+
 #Create inventory table by rich.table
 def create_inventory_table():
     table = Table(title="Inventory", show_header=True, header_style="yellow", border_style="magenta")
@@ -269,9 +270,6 @@ def profit(check_date):
     console = Console()
     print('')
     console.print(table)      
-
-# Visualize as a graph about revenue per day
-
 
 # Make a path for json file first. Then export inventory data to json file
 json_file = os.path.join(f'inventory-{strnow}.json')
