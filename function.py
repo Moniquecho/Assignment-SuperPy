@@ -63,9 +63,9 @@ def buy_item(buy_csv_file, product_name, amount, buy_price, expiration_date):
         last_buy_id = 0
         for row in reader:
             last_buy_id = row['id']
-        new_row = [int(last_buy_id)+1, product_name, buy_date, amount, buy_price, expiration_date]
+        buy_row = [int(last_buy_id)+1, product_name, buy_date, amount, buy_price, expiration_date]
         writer = csv.writer(f)
-        writer.writerow(new_row)
+        writer.writerow(buy_row)
 
     print(f"[blue]Added new product {product_name} to bought.csv[/blue]")
 
@@ -79,7 +79,7 @@ def sell_item(sell_csv_file, product_name, amount, price):
         for row in reader:
             last_sold_id = row['id']
 
-    prod_available = False
+    product_available = False
     for item in create_inventory(csv_bought_file, csv_sold_file):
         if product_name == item['product_name']:
             if item['stock'] == 0:
@@ -89,32 +89,32 @@ def sell_item(sell_csv_file, product_name, amount, price):
             elif amount > int(item['stock']):
                 with open (sell_csv_file, 'a', newline='') as f:
                     writer = csv.writer(f)
-                    new_row = [int(last_sold_id)+1, product_name, sell_date, int(item['stock']), price, item['id']]
-                    writer.writerow(new_row)
+                    sell_row = [int(last_sold_id)+1, product_name, sell_date, int(item['stock']), price, item['id']]
+                    writer.writerow(sell_row)
                     last_sold_id = int(last_sold_id)+1
-                    prod_available = True
+                    product_available = True
                     amount = amount - int(item['stock'])
                 continue
             elif amount <= int(item['stock']):
                 with open (sell_csv_file, 'a', newline='') as f:
                     writer = csv.writer(f)
-                    new_row = [int(last_sold_id)+1, product_name, sell_date, amount, price, item['id']]
-                    writer.writerow(new_row)
-                    prod_available = True
+                    sell_row = [int(last_sold_id)+1, product_name, sell_date, amount, price, item['id']]
+                    writer.writerow(sell_row)
+                    product_available = True
                     amount = 0
                 break
             else:
                 with open (sell_csv_file, 'a', newline='') as f:
                     writer = csv.writer(f)
-                    new_row = [int(last_sold_id)+1, product_name, sell_date, amount, price, item['id']]
-                    writer.writerow(new_row)
-                    prod_available = True
+                    sell_row = [int(last_sold_id)+1, product_name, sell_date, amount, price, item['id']]
+                    writer.writerow(sell_row)
+                    product_available = True
                     amnt = 0
                 break
         else:
             continue
 
-    if amount != 0 or prod_available == False:
+    if amount != 0 or product_available == False:
         print(f'item {product_name} is not enough in stock.')
 
 
@@ -162,7 +162,6 @@ def create_inventory(csv_bought_file, csv_sold_file):
             else:
                 continue
     return selected_stock
-
 #Create inventory table by rich.table
 def create_inventory_table():
     table = Table(title="Inventory", show_header=True, header_style="yellow", border_style="magenta")
@@ -270,6 +269,9 @@ def profit(check_date):
     console = Console()
     print('')
     console.print(table)      
+
+
+
 
 # Make a path for json file first. Then export inventory data to json file
 json_file = os.path.join(f'inventory-{strnow}.json')
